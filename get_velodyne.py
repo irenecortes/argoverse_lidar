@@ -135,6 +135,8 @@ def main():
 
         msg = ros_numpy.msgify(PointCloud2, data)
         msg.header.frame_id = 'velo_up'
+        timestamp = rospy.Time.now()
+        msg.header.stamp = timestamp
         velo_pub_up.publish(msg)
 
 
@@ -151,12 +153,12 @@ def main():
         data['z'] = pc_down[:,2]
         data['intensity'] = pc_down[:,3]
         data['ring'] = pc_down[:,4]
+        velo_pub_down.publish(msg)
 
         msg = ros_numpy.msgify(PointCloud2, data)
         msg.header.frame_id = 'velo_down'
-        msg.header.stamp = rospy.Time.now()
-        velo_pub_down.publish(msg)
-        print(msg.header.stamp.to_sec())
+        msg.header.stamp = timestamp
+        print(timestamp.to_sec())
         r.sleep()
 
 if __name__ == '__main__':

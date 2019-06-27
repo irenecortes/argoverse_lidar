@@ -61,7 +61,7 @@ index 06d7586..aaba896 100644
 +        ply_fpath: Path to a PLY file
 +
 +    Returns:
-+        arr: Array of shape (N, 3)
++        arr: Array of shape (N, 5)
 +    """
 +
 +    data = pyntcloud.PyntCloud.from_file(os.fspath(ply_fpath))

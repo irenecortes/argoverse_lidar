@@ -1,5 +1,5 @@
-import sys
-ros_path = '/opt/ros/lunar/lib/python2.7/dist-packages'
+import sys, os
+ros_path = '/opt/ros/' + os.environ['ROS_DISTRO'] + '/lib/python2.7/dist-packages'
 
 if ros_path in sys.path:
     print(sys.path)
@@ -10,7 +10,7 @@ from argoverse.data_loading.argoverse_tracking_loader import ArgoverseTrackingLo
 import argoverse.visualization.visualization_utils as viz_util
 import cv2
 
-sys.path.append('/opt/ros/lunar/lib/python2.7/dist-packages')
+sys.path.append(ros_path)
 import rospy
 import std_msgs.msg
 from sensor_msgs.msg import PointCloud2
@@ -88,7 +88,7 @@ def main():
     velo_pub_up = rospy.Publisher("velodyne_points_up", PointCloud2, queue_size=1)
     velo_pub_down = rospy.Publisher("velodyne_points_down", PointCloud2, queue_size=1)
 
-    root_dir =  'ARGOVERSE_ROOT/argoverse-api/argoverse-tracking/sample/'
+    root_dir =  os.path.join(os.environ['HOME'],'argoverse-api/argoverse-tracking/sample/')
     argoverse_loader = ArgoverseTrackingLoader(root_dir)
 
     log_id = 'c6911883-1843-3727-8eaa-41dc8cda8993'
@@ -107,54 +107,57 @@ def main():
     tf_up_lidar[0:3,0:3] = tf_up_lidar_rot.as_dcm()
     tf_up_lidar[0:3,3] = tf_up_lidar_tr
 
+    print('UP: ', tf_up_lidar_tr, tf_up_lidar_rot.as_rotvec(), tf_up_lidar_rot.as_euler('zyx', degrees=True), tf_up_lidar_rot.as_euler('xyz', degrees=True))
+    print('DOWN: ', tf_down_lidar_tr, tf_down_lidar_rot.as_rotvec(), tf_down_lidar_rot.as_euler('zyx', degrees=False), tf_down_lidar_rot.as_euler('xyz', degrees=False))
+
+
     for idx in range(0, argoverse_loader.lidar_count):
-        while not rospy.is_shutdown():
+        if rospy.is_shutdown():
+            break
 
-            argoverse_data = argoverse_loader.get(log_id)
-            pc = argoverse_data.get_lidar_ring(idx)
+        argoverse_data = argoverse_loader.get(log_id)
+        pc = argoverse_data.get_lidar_ring(idx)
 
-            # pc_ring_0 = pc[pc[:,4]==15]
+        pc_up, pc_down = separate_pc(pc, tf_up_lidar, tf_down_lidar)
 
-            pc_up, pc_down = separate_pc(pc, tf_up_lidar, tf_down_lidar)
+        data = np.zeros(pc_up.shape[0], dtype=[
+          ('x', np.float32),
+          ('y', np.float32),
+          ('z', np.float32),
+          ('intensity', np.uint8),
+          ('ring', np.uint8),
+        ])
+        data['x'] = pc_up[:,0]
+        data['y'] = pc_up[:,1]
+        data['z'] = pc_up[:,2]
+        data['intensity'] = pc_up[:,3]
+        data['ring'] = pc_up[:,4]
 
-
-            data = np.zeros(pc_up.shape[0], dtype=[
-              ('x', np.float32),
-              ('y', np.float32),
-              ('z', np.float32),
-              ('intensity', np.uint8),
-              ('ring', np.uint8),
-            ])
-            data['x'] = pc_up[:,0]
-            data['y'] = pc_up[:,1]
-            data['z'] = pc_up[:,2]
-            data['intensity'] = pc_up[:,3]
-            data['ring'] = pc_up[:,4]
-
-            msg = ros_numpy.msgify(PointCloud2, data)
-            msg.header.frame_id = 'velo_up'
-            velo_pub_up.publish(msg)
+        msg = ros_numpy.msgify(PointCloud2, data)
+        msg.header.frame_id = 'velo_up'
+        velo_pub_up.publish(msg)
 
 
-            data = np.zeros(pc_down.shape[0], dtype=[
-              ('x', np.float32),
-              ('y', np.float32),
-              ('z', np.float32),
-              ('intensity', np.uint8),
-              ('ring', np.uint8),
-            ])
+        data = np.zeros(pc_down.shape[0], dtype=[
+          ('x', np.float32),
+          ('y', np.float32),
+          ('z', np.float32),
+          ('intensity', np.uint8),
+          ('ring', np.uint8),
+        ])
 
-            data['x'] = pc_down[:,0]
-            data['y'] = pc_down[:,1]
-            data['z'] = pc_down[:,2]
-            data['intensity'] = pc_down[:,3]
-            data['ring'] = pc_down[:,4]
+        data['x'] = pc_down[:,0]
+        data['y'] = pc_down[:,1]
+        data['z'] = pc_down[:,2]
+        data['intensity'] = pc_down[:,3]
+        data['ring'] = pc_down[:,4]
 
-            msg = ros_numpy.msgify(PointCloud2, data)
-            msg.header.frame_id = 'velo_down'
-            velo_pub_down.publish(msg)
-            # print(pc.shape)
-            r.sleep()
+        msg = ros_numpy.msgify(PointCloud2, data)
+        msg.header.frame_id = 'velo_down'
+        msg.header.stamp = rospy.Time.now()
+        velo_pub_down.publish(msg)
+        print(msg.header.stamp.to_sec())
+        r.sleep()
 
 if __name__ == '__main__':
     main()

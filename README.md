@@ -71,5 +71,5 @@ The script *get_velodyne.py* reads the lidar pointclouds from the argoverse data
     root_dir =  'ARGOVERSE_ROOT/argoverse-api/argoverse-tracking/sample/'
     log_id = 'c6911883-1843-3727-8eaa-41dc8cda8993'
 ```
-The script uses ROS Lunar and publishes both pointclouds in different messages. 
+The script uses ROS and publishes both pointclouds in different messages. 
 The *velo2car.launch* file publishes the tf transformations between the lidars and the vehicle coordinate system.

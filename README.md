@@ -7,6 +7,8 @@ Upper LiDAR | Lower LiDAR
 
 ## Installation
 It is needed to apply some changes to the [argoverse-api](https://github.com/argoai/argoverse-api):
+- With diff.patch file
+- Or manually:
 
 *In /argoverse/data_loading/argoverse_tracking_loader.py:*
 

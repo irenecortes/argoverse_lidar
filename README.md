@@ -1,8 +1,8 @@
 # argoverse_lidar
 This repository allows you to access to the pointcloud of the lidars in [argoverse dataset](https://www.argoverse.org/) separately.
-![up_image](https://github.com/irenecortes/argoverse_lidar/blob/master/images/uo.png "Pointcloud from the upper lidar")
-![bottom_image](https://github.com/irenecortes/argoverse_lidar/blob/master/images/down.png "Pointcloud from the lower lidar")
-
++------------------+-------------------+
+| ![](https://github.com/irenecortes/argoverse_lidar/blob/master/images/up.png)     | ![](https://github.com/irenecortes/argoverse_lidar/blob/master/images/down.png)    |
++------------------+-------------------+
 
 
 ## Installation

@@ -6,8 +6,10 @@ It is needed to apply some changes to the argoverse-api:
 *In /argoverse/data_loading/argoverse_tracking_loader.py:*
 
 Modify the import of load_ply:
--from argoverse.utils.ply_loader import load_ply
-+from argoverse.utils.ply_loader import load_ply, load_ply_ring
+```diff
+-      from argoverse.utils.ply_loader import load_ply
++      from argoverse.utils.ply_loader import load_ply, load_ply_ring
+```
 
 Add this function:
 

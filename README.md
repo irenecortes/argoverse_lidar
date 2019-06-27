@@ -1,7 +1,8 @@
 # argoverse_lidar
 This repository allows you to access to the pointcloud of the lidars in argoverse dataset separately
 
-It is needed to apply some changes to the argoverse-api:
+## Installation
+It is needed to apply some changes to the [argoverse-api](https://github.com/argoai/argoverse-api):
 
 *In /argoverse/data_loading/argoverse_tracking_loader.py:*
 
@@ -64,3 +65,11 @@ def load_ply_ring(ply_fpath: _PathLike) -> np.ndarray:
 
     return np.concatenate((x, y, z, i, ring), axis=1)
 ```
+## Use
+The script *get_velodyne.py* reads the lidar pointclouds from the argoverse dataset. You can configure which log to reproduce by changing this variables:
+```python
+    root_dir =  'ARGOVERSE_ROOT/argoverse-api/argoverse-tracking/sample/'
+    log_id = 'c6911883-1843-3727-8eaa-41dc8cda8993'
+```
+The script uses ROS and publishes both pointcloud in a different message. 
+The *velo2car.launch* file publishes the tf transformations between the lidars and the vehicle coordinate system.

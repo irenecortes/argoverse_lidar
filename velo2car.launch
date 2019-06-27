@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<launch>
+    <arg name="stdout" default="screen" />
+    <node pkg="tf" type="static_transform_publisher" name="veloup2car" args="1.35018, 0.0, 1.59042 0. 0. 0. car velo_up 10" />
+    <node pkg="tf" type="static_transform_publisher" name="velodown2car" args="1.3533224859271054, -0.0009818949950377448 1.4830535977952262 2.18816486e-01  8.76149718e-04  3.14115185e+00 car velo_down 100" />
+</launch>
+

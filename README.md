@@ -42,7 +42,7 @@ def get_lidar_ring(self, idx: int, log_id: Optional[str] = None, load: bool = Tr
 *In /argoverse/utils/ply_loader.py:*
 
 Add this function:
-```
+```python
 def load_ply_ring(ply_fpath: _PathLike) -> np.ndarray:
     """Load a point cloud file from a filepath.
 

@@ -59,7 +59,7 @@ def load_ply_ring(ply_fpath: _PathLike) -> np.ndarray:
         ply_fpath: Path to a PLY file
 
     Returns:
-        arr: Array of shape (N, 3)
+        arr: Array of shape (N, 3)5
     """
 
     data = pyntcloud.PyntCloud.from_file(os.fspath(ply_fpath))

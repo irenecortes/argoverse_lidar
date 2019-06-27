@@ -139,7 +139,6 @@ def main():
         msg.header.stamp = timestamp
         velo_pub_up.publish(msg)
 
-
         data = np.zeros(pc_down.shape[0], dtype=[
           ('x', np.float32),
           ('y', np.float32),
@@ -153,13 +152,15 @@ def main():
         data['z'] = pc_down[:,2]
         data['intensity'] = pc_down[:,3]
         data['ring'] = pc_down[:,4]
-        velo_pub_down.publish(msg)
 
         msg = ros_numpy.msgify(PointCloud2, data)
         msg.header.frame_id = 'velo_down'
         msg.header.stamp = timestamp
+        velo_pub_down.publish(msg)
+
         print(timestamp.to_sec())
         r.sleep()
+
 
 if __name__ == '__main__':
     main()

@@ -3,13 +3,15 @@ This repository allows you to access to the pointcloud of the lidars in argovers
 
 It is needed to apply some changes to the argoverse-api:
 
-in /argoverse/data_loading/argoverse_tracking_loader.py:
+*In /argoverse/data_loading/argoverse_tracking_loader.py:*
 
 Modify the import of load_ply:
 -from argoverse.utils.ply_loader import load_ply
 +from argoverse.utils.ply_loader import load_ply, load_ply_ring
 
 Add this function:
+
+```python
 def get_lidar_ring(self, idx: int, log_id: Optional[str] = None, load: bool = True) -> Union[str, np.ndarray]:
     """Get lidar corresponding to frame index idx (in lidar frame).
 
@@ -34,10 +36,13 @@ def get_lidar_ring(self, idx: int, log_id: Optional[str] = None, load: bool = Tr
     if load:
         return load_ply_ring(self._lidar_list[log_id][idx])
     return self._lidar_list[log_id][idx]
+```
 
-In /argoverse/utils/ply_loader.py:
+
+*In /argoverse/utils/ply_loader.py:*
 
 Add this function:
+```
 def load_ply_ring(ply_fpath: _PathLike) -> np.ndarray:
     """Load a point cloud file from a filepath.
 
@@ -56,4 +61,4 @@ def load_ply_ring(ply_fpath: _PathLike) -> np.ndarray:
     ring = np.array(data.points.laser_number)[:, np.newaxis]
 
     return np.concatenate((x, y, z, i, ring), axis=1)
- 
+```
